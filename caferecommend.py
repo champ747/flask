@@ -50,6 +50,6 @@ atmosphere_weight = 0.7
 service_weight = 0.3
 
 # 추천 결과 출력(점수가 낮으면 낮을수록 원하는 카페에 가까움)
-recommendations = recommend_cafes_with_weights(user_preference_atmosphere, atmosphere_weight, service_weight)
+recommendations = recommend_cafes(user_preference_atmosphere, atmosphere_weight, service_weight)
 for r in recommendations:
     print(f"카페: {r['name']}, 점수: {r['final_score']}")
