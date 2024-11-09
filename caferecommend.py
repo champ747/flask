@@ -1,7 +1,4 @@
 from pymongo import MongoClient
-from flask import Flask, jsonify, request
-
-app = Flask(__name__)
 
 # MongoDB 연결 설정
 client = MongoClient("mongodb+srv://champ7474:gnbalpha1@cluster0.vztxs.mongodb.net/")
@@ -12,7 +9,9 @@ collection = db['caves']  # 컬렉션 이름: caves
 ATMOSPHERE_WEIGHT = 0.4
 SERVICE_WEIGHT = 0.6
 
-def recommend_cafes(user_preference_categories):
+def recommend_cafes(user_preferences):
+    user_preference_categories = user_preferences.get('categories', [])
+    
     # MongoDB에서 카페 데이터 가져오기
     cafes = list(collection.find({}, {'_id': 0, 'name': 1, 'category': 1, 'rating': 1}))
 
@@ -45,18 +44,3 @@ def recommend_cafes(user_preference_categories):
     recommendations = sorted(recommendations, key=lambda x: x['final_score'], reverse=True)[:30]
     
     return recommendations
-
-@app.route('/api/recommend', methods=['POST'])
-def recommend():
-    # 프론트엔드에서 전송한 사용자 선호도 데이터를 가져옴
-    user_preferences = request.json.get('preferences')
-    user_preference_categories = user_preferences.get('categories', [])
-
-    # 추천 알고리즘 호출
-    recommendations = recommend_cafes(user_preference_categories)
-    
-    # 추천 결과 반환
-    return jsonify(recommendations)
-
-if __name__ == '__main__':
-    app.run(debug=True, port=5001)
