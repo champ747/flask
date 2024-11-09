@@ -24,11 +24,12 @@ def recommend_cafes(user_preference_categories):
         # 사용자 선호 category와 카페의 대표 category 비교 및 가중치 계산
         match_score = 0
         for index, user_category in enumerate(user_preference_categories):
-            weight = ATMOSPHERE_WEIGHT * (len(user_preference_categories) - index)  # 순서에 따라 가중치 감소
+            # 사용자 선호도 순서에 따라 가중치를 계산
+            weight = ATMOSPHERE_WEIGHT * (len(user_preference_categories) - index)
             if user_category in cafe.get('category', []):
                 match_score += weight
 
-        # 서비스 평점 계산 (높을수록 선호)
+        # 카페의 서비스 평점 차이 계산
         service_diff = max_service_rating - float(cafe.get('rating', 0))
         
         # 최종 점수 계산
@@ -36,7 +37,7 @@ def recommend_cafes(user_preference_categories):
         
         # 추천 리스트에 추가
         recommendations.append({
-            'name': cafe['name'],
+            'name': cafe.get('name', 'Unknown'),  # 이름이 없는 경우 'Unknown'으로 표시
             'final_score': final_score
         })
 
