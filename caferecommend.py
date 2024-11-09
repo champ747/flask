@@ -8,7 +8,7 @@ client = MongoClient("mongodb+srv://champ7474:gnbalpha1@cluster0.vztxs.mongodb.n
 db = client['test']  # 데이터베이스 이름: test
 collection = db['caves']  # 컬렉션 이름: caves
 
-def recommend_cafes_with_weights(user_preference_categories, atmosphere_weight, service_weight):
+def recommend_cafes(user_preference_categories, atmosphere_weight, service_weight):
     # MongoDB에서 카페 데이터 가져오기
     cafes = list(collection.find({}, {'_id': 0, 'name': 1, 'category': 1, 'rating': 1}))
 
@@ -49,7 +49,7 @@ def recommend():
     service_weight = user_preferences.get('service_weight', 0.3)
 
     # 추천 알고리즘 호출
-    recommendations = recommend_cafes_with_weights(user_preference_categories, atmosphere_weight, service_weight)
+    recommendations = recommend_cafes(user_preference_categories, atmosphere_weight, service_weight)
     
     # 추천 결과 반환
     return jsonify(recommendations)
