@@ -1,7 +1,7 @@
 from pymongo import MongoClient
 
 # MongoDB 클라이언트 설정
-client = MongoClient("mongodb+srv://champ7474:gnbalpha1@cluster0.mongodb.net/test?retryWrites=true&w=majority")
+client = MongoClient("mongodb+srv://champ7474:gnbalpha1@cluster0.vztxs.mongodb.net/")
 db = client["your_database_name"]  # MongoDB 데이터베이스 이름 입력
 cafes_collection = db["cafes"]     # MongoDB 컬렉션 이름 입력
 
