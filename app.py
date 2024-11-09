@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
 from caferecommend import recommend_cafes  # caferecommend.py의 함수 임포트
+import json
 
 app = Flask(__name__)
 
@@ -11,8 +12,11 @@ def recommend():
     # 추천 알고리즘 호출
     recommendations = recommend_cafes(user_preferences)
     
-    # 추천 결과 반환
-    return jsonify(recommendations)
+    # JSON 데이터로 반환, ensure_ascii=False로 한글 깨짐 방지
+    return app.response_class(
+        response=json.dumps(recommendations, ensure_ascii=False),
+        mimetype='application/json'
+    )
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
