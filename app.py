@@ -1,4 +1,5 @@
-from flask import Flask, render_template
+from flask import Flask, jsonify, request
+from caferecommend import recommend_cafes  # caferecommend.py의 함수 임포트
 
 app = Flask(__name__)
 
