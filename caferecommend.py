@@ -1,4 +1,4 @@
-def recommend_cafes_with_weights(user_preference_atmosphere, atmosphere_weight, service_weight):
+def recommend_cafes(user_preference_atmosphere, atmosphere_weight, service_weight):
     # 예시 데이터: 카페 리스트
     cafes = [
         {'name': 'Cafe A', 'atmosphere': 1, 'service_rating': 4.5},
