@@ -17,7 +17,9 @@ def get_review_count(cafe_id):
         response = requests.get(url)
         response.raise_for_status()  # 상태 코드가 200이 아닐 경우 예외 발생
         data = response.json()
-        return data.get('review_count', 0)  # 응답에서 리뷰 개수를 추출
+        review_count = data.get('review_count', 0)  # 응답에서 리뷰 개수를 추출
+        print(f"Successfully fetched review count for cafe_id {cafe_id}: {review_count}")
+        return review_count
     except requests.RequestException as e:
         print(f"Error fetching review count for cafe_id {cafe_id}: {e}")
         return 0
