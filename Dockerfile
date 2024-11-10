@@ -13,9 +13,15 @@ ENV PATH $JAVA_HOME/bin:$PATH
 # 작업 디렉토리 설정
 WORKDIR /app
 
-# 필요한 파일 복사
+# 프로젝트 파일 복사
 COPY . /app
 
 # 필요한 Python 패키지 설치
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
+
+# 포트 설정
+EXPOSE 5000
+
+# Flask 앱 실행 명령어
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:app"]
