@@ -11,8 +11,9 @@ cafes_collection = db["caves"]  # MongoDB 컬렉션 이름 입력
 ATMOSPHERE_WEIGHT = 0.4
 SERVICE_WEIGHT = 0.6
 
-# 리뷰 수를 가져오는 함수
+# 리뷰 수를 가져오는 함수 (임시 비활성화)
 def get_review_count(cafe_id):
+    # return 0  # 테스트용으로 모든 카페의 리뷰 개수를 0으로 설정
     url = f"https://port-0-back-m341pqyi646021b2.sel4.cloudtype.app/reviews/count/{cafe_id}"
     try:
         response = requests.get(url)
@@ -74,7 +75,7 @@ def recommend_cafes(user_preferences):
 
 # 테스트용으로 사용자 선호도 입력
 user_preferences = {
-    "categories": [ "사진찍기 좋은", "사람 많은", "넓은", "조용한", "경치가 좋은", "인테리어 예쁜"]
+    "categories": ["사진찍기 좋은", "사람 많은", "넓은", "조용한", "경치가 좋은", "인테리어 예쁜"]
 }
 
 # 추천 결과 가져오기
