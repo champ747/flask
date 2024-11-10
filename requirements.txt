@@ -11,3 +11,6 @@ werkzeug==2.2.2 ; python_version >= '3.7'
 zipp==3.11.0 ; python_version >= '3.7'
 pymongo==4.0.2
 pymongo[srv]==4.0.2
+konlpy==0.6.0
+scikit-learn==1.0.2
+nltk==3.6.7
