@@ -18,5 +18,20 @@ def recommend():
         mimetype='application/json'
     )
 
+# 챗봇 엔드포인트 추가
+@app.route('/api/chatbot', methods=['POST'])
+def chatbot():
+    # 프론트엔드에서 전송한 사용자 입력 데이터를 가져옴
+    user_input = request.json.get('input')
+    
+    # 챗봇의 추천 함수 호출
+    recommendations = recommend_cafes_from_chatbot(user_input)
+    
+    # JSON 데이터로 반환, ensure_ascii=False로 한글 깨짐 방지
+    return app.response_class(
+        response=json.dumps({"recommendations": recommendations}, ensure_ascii=False),
+        mimetype='application/json'
+    )
+
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
