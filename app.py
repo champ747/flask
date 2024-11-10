@@ -8,7 +8,7 @@ CORS(app)  # CORS 설정 추가
 
 @app.route('/api/recommend', methods=['POST'])
 def recommend():
-    user_preferences = request.json.get('preferences')
+    user_preferences = request.json.get('categories')
     recommendations = recommend_cafes_standard(user_preferences)
     return app.response_class(
         response=json.dumps(recommendations, ensure_ascii=False),
