@@ -30,7 +30,7 @@ def recommend_cafes(user_preferences):
     user_preference_categories = user_preferences.get('categories', [])
     
     # MongoDB에서 모든 카페 데이터 가져오기
-    cafes = list(cafes_collection.find({}, {'_id': 1, 'name': 1, 'image': 1, 'rating': 1, 'status': 1, 'location': 1, 'category': 1}))
+    cafes = list(cafes_collection.find({}, {'_id': 1, 'name': 1, 'image': 1, 'rating': 1, 'location': 1, 'category': 1}))
 
     # 최대 서비스 평점 정의 (기준점)
     max_service_rating = 5.0
@@ -61,7 +61,6 @@ def recommend_cafes(user_preferences):
             "image": cafe.get('image', 'https://example.com/default.jpg'),
             "rating": cafe.get('rating', 0),
             "reviews": review_count,
-            "status": cafe.get('status', '정보 없음'),
             "location": cafe.get('location', '위치 정보 없음'),
             "final_score": round(final_score, 2)
         })
@@ -75,7 +74,7 @@ def recommend_cafes(user_preferences):
 
 # 테스트용으로 사용자 선호도 입력
 user_preferences = {
-    "categories": ["넓은", "조용한"]
+    "categories": [ "사진찍기 좋은", "사람 많은", "넓은", "조용한", "경치가 좋은", "인테리어 예쁜"]
 }
 
 # 추천 결과 가져오기
