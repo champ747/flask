@@ -14,7 +14,5 @@ def recommend():
 
     )
 
-from chatbot import recommend_cafes  # chatbot.py의 함수 임포트
-
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
