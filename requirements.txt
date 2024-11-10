@@ -13,3 +13,4 @@ pymongo==4.0.2
 pymongo[srv]==4.0.2
 konlpy==0.6.0
 requests
+flask_cors
