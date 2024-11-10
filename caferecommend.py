@@ -1,4 +1,5 @@
 from pymongo import MongoClient
+from bson import ObjectId  # ObjectId 클래스를 가져옵니다.
 import requests
 
 # MongoDB 클라이언트 설정
@@ -12,7 +13,7 @@ SERVICE_WEIGHT = 0.6
 
 # 리뷰 수를 가져오는 함수
 def get_review_count(cafe_id):
-    url = f"https://port-0-back-m341pqyi646021b2.sel4.cloudtype.app/recommend/reviews/count/{cafe_id}"
+    url = f"https://port-0-back-m341pqyi646021b2.sel4.cloudtype.app/reviews/count/{cafe_id}"
     try:
         response = requests.get(url)
         response.raise_for_status()  # 상태 코드가 200이 아닐 경우 예외 발생
@@ -24,12 +25,14 @@ def get_review_count(cafe_id):
         print(f"Error fetching review count for cafe_id {cafe_id}: {e}")
         return 0
 
-# 특정 카페에 대한 데이터 가져오기 및 추천 점수 계산
-def get_single_cafe_recommendation(cafe_id, user_preferences):
+# 특정 카페에 대한 데이터를 가져오는 함수 (기존 recommend_cafes 이름으로 유지)
+def recommend_cafes(user_preferences):
+    # 특정 카페 ID로 테스트할 때 사용할 ID
+    test_cafe_id = ObjectId("672e4b0a614f611746736b8d")  # ObjectId로 변환하여 사용
     user_preference_categories = user_preferences.get('categories', [])
     
-    # MongoDB에서 해당 카페 데이터 가져오기
-    cafe = cafes_collection.find_one({"_id": cafe_id}, {'_id': 1, 'name': 1, 'image': 1, 'rating': 1, 'status': 1, 'location': 1, 'category': 1})
+    # MongoDB에서 특정 카페 데이터 가져오기
+    cafe = cafes_collection.find_one({"_id": test_cafe_id}, {'_id': 1, 'name': 1, 'image': 1, 'rating': 1, 'status': 1, 'location': 1, 'category': 1})
     
     if cafe:
         review_count = get_review_count(str(cafe['_id']))  # 리뷰 개수 요청
@@ -49,7 +52,7 @@ def get_single_cafe_recommendation(cafe_id, user_preferences):
         final_score = match_score + (service_diff * SERVICE_WEIGHT)
         
         # 결과 출력
-        recommendation = {
+        recommendation = [{
             "id": str(cafe['_id']),
             "name": cafe.get('name', 'Unknown'),
             "image": cafe.get('image', 'https://example.com/default.jpg'),
@@ -58,18 +61,17 @@ def get_single_cafe_recommendation(cafe_id, user_preferences):
             "status": cafe.get('status', '정보 없음'),
             "location": cafe.get('location', '위치 정보 없음'),
             "final_score": round(final_score, 2)
-        }
+        }]
         print("Single Cafe Recommendation:", recommendation)
         return recommendation
     else:
         print("No cafe found with the given ID.")
-        return None
+        return []
 
-# 테스트용으로 특정 카페 ID와 사용자 선호도 입력
-test_cafe_id = 'your_cafe_id_here'  # 여기에 테스트할 카페의 _id 값을 입력하세요
+# 테스트용으로 사용자 선호도 입력
 user_preferences = {
     "categories": ["넓은", "조용한"]
 }
 
 # 추천 결과 가져오기
-get_single_cafe_recommendation(test_cafe_id, user_preferences)
+recommend_cafes(user_preferences)
