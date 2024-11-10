@@ -16,12 +16,5 @@ def recommend():
 
 from chatbot import recommend_cafes  # chatbot.py의 함수 임포트
 
-@app.route('/api/chatbot', methods=['POST'])
-def chatbot():
-    user_input = request.json.get('user_input', '')
-    response = recommend_cafes(user_input)
-    return jsonify({"recommendations": response})
-
-
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
