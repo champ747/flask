@@ -1,33 +1,23 @@
 from flask import Flask, jsonify, request
-from caferecommend import recommend_cafes  # caferecommend.py의 함수 임포트
+from caferecommend import recommend_cafes as recommend_cafes_standard  # caferecommend.py의 함수 임포트
+from chatbot import recommend_cafes  # chatbot.py의 챗봇 추천 함수
 import json
 
 app = Flask(__name__)
 
 @app.route('/api/recommend', methods=['POST'])
 def recommend():
-    # 프론트엔드에서 전송한 사용자 선호도 데이터를 가져옴
     user_preferences = request.json.get('preferences')
-    
-    # 추천 알고리즘 호출
-    recommendations = recommend_cafes(user_preferences)
-    
-    # JSON 데이터로 반환, ensure_ascii=False로 한글 깨짐 방지
+    recommendations = recommend_cafes_standard(user_preferences)
     return app.response_class(
         response=json.dumps(recommendations, ensure_ascii=False),
         mimetype='application/json'
     )
 
-# 챗봇 엔드포인트 추가
 @app.route('/api/chatbot', methods=['POST'])
 def chatbot():
-    # 프론트엔드에서 전송한 사용자 입력 데이터를 가져옴
     user_input = request.json.get('input')
-    
-    # 챗봇의 추천 함수 호출
-    recommendations = recommend_cafes_from_chatbot(user_input)
-    
-    # JSON 데이터로 반환, ensure_ascii=False로 한글 깨짐 방지
+    recommendations = recommend_cafes(user_input)
     return app.response_class(
         response=json.dumps({"recommendations": recommendations}, ensure_ascii=False),
         mimetype='application/json'
