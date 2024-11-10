@@ -12,5 +12,3 @@ zipp==3.11.0 ; python_version >= '3.7'
 pymongo==4.0.2
 pymongo[srv]==4.0.2
 scikit-learn
-mecab-python3
-konlpy
