@@ -5,7 +5,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from pymongo import MongoClient
 
 # MongoDB 클라우드 연결 설정
-client = MongoClient("mongodb+srv://suyeon10187:gnbalpha1@cluster0.vztxs.mongodb.net/?retryWrites=true&w=majority&tlsAllowInvalidCertificates=true")
+client = MongoClient("mongodb+srv://champ7474:gnbalpha1@cluster0.vztxs.mongodb.net/")
 db = client['test']                       # 데이터베이스 이름
 collection = db['caves']                 # 컬렉션 이름
 
