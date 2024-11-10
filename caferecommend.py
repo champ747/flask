@@ -12,7 +12,7 @@ SERVICE_WEIGHT = 0.6
 
 # 리뷰 수를 가져오는 함수
 def get_review_count(cafe_id):
-    url = f"https://port-0-back-m341pqyi646021b2.sel4.cloudtype.app/recommend/reviews/count/{cafe_id}"
+    url = f"https://port-0-back-m341pqyi646021b2.sel4.cloudtype.app/recommend/reviews/count/cafe_id"
     try:
         response = requests.get(url)
         response.raise_for_status()  # 상태 코드가 200이 아닐 경우 예외 발생
