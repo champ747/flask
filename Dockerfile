@@ -11,6 +11,9 @@ RUN apt-get update && \
 ENV JAVA_HOME /usr/lib/jvm/java-11-openjdk-amd64
 ENV PATH $JAVA_HOME/bin:$PATH
 
+# MeCab 한국어 사전 경로 설정
+ENV MECABKO_DIC_PATH /usr/lib/x86_64-linux-gnu/mecab/dic/mecab-ko-dic
+
 # 파이썬 패키지 설치
 WORKDIR /app
 COPY requirements.txt /app/
