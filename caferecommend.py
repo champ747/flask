@@ -5,6 +5,7 @@ import requests
 client = MongoClient("mongodb+srv://champ7474:gnbalpha1@cluster0.vztxs.mongodb.net/")
 db = client["test"]  # MongoDB 데이터베이스 이름 입력
 cafes_collection = db["caves"]  # MongoDB 컬렉션 이름 입력
+cafes_review = db["reviews"]   #카페 리뷰정보
 
 # atmosphere_weight와 service_weight를 고정 값으로 설정
 ATMOSPHERE_WEIGHT = 0.4
