@@ -1,8 +1,10 @@
 from flask import Flask, jsonify, request
 from caferecommend import recommend_cafes as recommend_cafes_standard  # caferecommend.py의 함수 임포트
 import json
+from flask_cors import CORS  # CORS import 추가
 
 app = Flask(__name__)
+CORS(app)  # CORS 설정 추가
 
 @app.route('/api/recommend', methods=['POST'])
 def recommend():
