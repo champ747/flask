@@ -14,5 +14,6 @@ pymongo[srv]==4.0.2
 scikit-learn
 mecab-python3
 mecab-ko-dic
+konlpy
 
 
