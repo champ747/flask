@@ -61,7 +61,7 @@ def calculate_tfidf_similarity(user_input, cafes):
     return similarities
 
 # 추천 함수
-def recommend_cafes(user_input):
+def recommend_cafes_from_chatbot(user_input):
     processed_input = process_user_input(user_input)
 
     # 지역명 추출
