@@ -15,7 +15,7 @@ def get_review_count(cafe_id):
 
 # 모든 카페에 대해 추천 점수를 계산하는 함수
 def recommend_cafes(user_preferences):
-    cafes = list(cafes_collection.find({}, {'_id': 1, 'name': 1, 'image': 1, 'rating': 1, 'location': 1, 'category': 1}))
+    cafes = list(cafes_collection.find({}, {'_id': 1, 'name': 1, 'image_url': 1, 'rating': 1, 'address': 1, 'category': 1}))
 
     max_service_rating = 5.0
     recommendations = []
@@ -38,10 +38,10 @@ def recommend_cafes(user_preferences):
         recommendations.append({
             "id": cafe_id,
             "name": cafe.get('name', 'Unknown'),
-            "image": cafe.get('image', 'https://example.com/default.jpg'),
+            "image": cafe.get('image_url', 'https://example.com/default.jpg'),
             "rating": service_rating,
             "reviews": review_count,
-            "location": cafe.get('location', '위치 정보 없음'),
+            "location": cafe.get('address', '위치 정보 없음'),
             "final_score": round(final_score, 2)
         })
 
