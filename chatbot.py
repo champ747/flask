@@ -1,7 +1,5 @@
-from konlpy.tag import Mecab  # mecab-ko 형태소 분석기 사용
-
-mecab = Mecab(dicpath='/usr/lib/x86_64-linux-gnu/mecab/dic/mecab-ko-dic')
-
+import json
+from konlpy.tag import Okt
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from pymongo import MongoClient
@@ -12,15 +10,20 @@ db = client['test']                       # 데이터베이스 이름
 collection = db['caves']                 # 컬렉션 이름
 
 # 형태소 분석기 초기화
-mecab = Mecab()
+okt = Okt()
 
 # 리뷰와 카테고리 키워드를 형태소로 분석하는 함수 (가중치 없이)
 def tokenize_with_weights(reviews, categories):
     tokens = []
+
+    # 리뷰 텍스트에서 명사와 형용사만 추출
     for review in reviews:
         if isinstance(review, str):
-            tokens.extend([word for word in mecab.nouns(review)])  # mecab로 명사만 추출
+            tokens.extend([word for word, tag in okt.pos(review) if tag in ['Noun', 'Adjective']])
+
+    # 각 카테고리를 가중치 없이 한 번씩 추가
     tokens.extend(categories)
+
     return ' '.join(tokens)
 
 # MongoDB에서 데이터 가져오기
