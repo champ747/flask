@@ -5,7 +5,6 @@ import requests
 client = MongoClient("mongodb+srv://champ7474:gnbalpha1@cluster0.vztxs.mongodb.net/")
 db = client["test"]  # MongoDB 데이터베이스 이름 입력
 cafes_collection = db["caves"]  # MongoDB 컬렉션 이름 입력
-cafes_review = db["reviews"]   #카페 리뷰정보
 
 # atmosphere_weight와 service_weight를 고정 값으로 설정
 ATMOSPHERE_WEIGHT = 0.4
@@ -13,7 +12,7 @@ SERVICE_WEIGHT = 0.6
 
 # 리뷰 수를 가져오는 함수
 def get_review_count(cafe_id):
-    url = f"https://port-0-back-m341pqyi646021b2.sel4.cloudtype.app/recommend/reviews/count/cafe_id"
+    url = f"https://port-0-back-m341pqyi646021b2.sel4.cloudtype.app/reviews/count/{cafe_id}"
     try:
         response = requests.get(url)
         response.raise_for_status()  # 상태 코드가 200이 아닐 경우 예외 발생
@@ -33,7 +32,7 @@ def recommend_cafes(user_preferences):
     max_service_rating = 5.0
     recommendations = []
     
-    for idx, cafe in enumerate(cafes):
+    for cafe in cafes:
         cafe_id = str(cafe['_id'])  # MongoDB ObjectID를 문자열로 변환
         review_count = get_review_count(cafe_id)  # 리뷰 개수 요청
 
@@ -53,7 +52,7 @@ def recommend_cafes(user_preferences):
         
         # 추천 리스트에 추가, 요청한 정보 포함
         recommendations.append({
-            "id": idx + 1,
+            "id": cafe_id,
             "name": cafe.get('name', 'Unknown'),
             "image": cafe.get('image', 'https://example.com/default.jpg'),  # 기본 이미지 URL
             "rating": cafe.get('rating', 0),
