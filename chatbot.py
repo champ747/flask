@@ -1,4 +1,7 @@
 from konlpy.tag import Mecab  # mecab-ko 형태소 분석기 사용
+
+mecab = Mecab(dicpath='/usr/lib/x86_64-linux-gnu/mecab/dic/mecab-ko-dic')
+
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from pymongo import MongoClient
