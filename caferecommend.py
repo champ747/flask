@@ -11,8 +11,6 @@ cafes_collection = db["caves"]  # MongoDB 컬렉션 이름 입력
 ATMOSPHERE_WEIGHT = 0.4
 SERVICE_WEIGHT = 0.6
 
-total_review_count = 0
-
 # 리뷰 수를 가져오는 함수
 def get_review_count(cafe_id):
     url = f"https://port-0-back-m341pqyi646021b2.sel4.cloudtype.app/reviews/count/{cafe_id}"
@@ -22,7 +20,6 @@ def get_review_count(cafe_id):
         data = response.json()
         review_count = data.get('review_count', 0)  # 응답에서 리뷰 개수를 추출
         print(f"Successfully fetched review count for cafe_id {cafe_id}: {review_count}")
-        total_review_count += review_count
         return review_count
     except requests.RequestException as e:
         print(f"Error fetching review count for cafe_id {cafe_id}: {e}")
@@ -71,7 +68,6 @@ def recommend_cafes(user_preferences):
 
     # 점수를 기준으로 카페 정렬 후 상위 30개만 반환
     recommendations = sorted(recommendations, key=lambda x: x['final_score'], reverse=True)[:30]
-    print(f"total review : {total_review_count}")
     
     # 결과 출력
     print("Top 30 Cafe Recommendations:", recommendations)
