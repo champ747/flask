@@ -29,7 +29,7 @@ def recommend_cafes(user_preferences):
     user_preference_categories = user_preferences.get('categories', [])
     
     # MongoDB에서 모든 카페 데이터 가져오기
-    cafes = list(cafes_collection.find({}, {'_id': 1, 'name': 1, 'image': 1, 'rating': 1, 'location': 1, 'category': 1}))
+    cafes = list(cafes_collection.find({}, {'_id': 1, 'name': 1, 'image_url': 1, 'rating': 1, 'address': 1, 'category': 1}))
 
     # 최대 서비스 평점 정의 (기준점)
     max_service_rating = 5.0
