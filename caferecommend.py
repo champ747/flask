@@ -56,9 +56,9 @@ def recommend_cafes(user_preferences):
         recommendations.append({
             "id": cafe_id,
             "name": cafe.get('name', 'Unknown'),
-            "image": cafe.get('image', 'https://example.com/default.jpg'),
+            "image_url": cafe.get('image_url', 'https://example.com/default.jpg'),
             "rating": cafe.get('rating', 0),    #rating의 경우 현재 숫자가 아닌 string으로 넘겨주는중
-            "location": cafe.get('location', '위치 정보 없음'),
+            "address": cafe.get('address', '위치 정보 없음'),
             "final_score": round(final_score, 2)
         })
 
