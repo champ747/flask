@@ -11,6 +11,8 @@ cafes_collection = db["caves"]  # MongoDB 컬렉션 이름 입력
 ATMOSPHERE_WEIGHT = 0.4
 SERVICE_WEIGHT = 0.6
 
+total_review_count = 0
+
 # 리뷰 수를 가져오는 함수
 def get_review_count(cafe_id):
     url = f"https://port-0-back-m341pqyi646021b2.sel4.cloudtype.app/reviews/count/{cafe_id}"
