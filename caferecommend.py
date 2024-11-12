@@ -37,7 +37,6 @@ def recommend_cafes(user_preferences):
     
     for cafe in cafes:
         cafe_id = str(cafe['_id'])  # MongoDB ObjectID를 문자열로 변환
-        review_count = get_review_count(cafe_id)  # 리뷰 개수 요청
 
         # 사용자 선호 category와 카페의 대표 category 비교 및 가중치 계산
         match_score = 0
@@ -53,20 +52,24 @@ def recommend_cafes(user_preferences):
         # 최종 점수 계산
         final_score = match_score + (service_diff * SERVICE_WEIGHT)
         
-        # 추천 리스트에 추가
+        # 추천 리스트에 추가 (리뷰 수는 아직 포함하지 않음)
         recommendations.append({
             "id": cafe_id,
             "name": cafe.get('name', 'Unknown'),
             "image": cafe.get('image', 'https://example.com/default.jpg'),
             "rating": cafe.get('rating', 0),
-            "reviews": review_count,
             "location": cafe.get('location', '위치 정보 없음'),
             "final_score": round(final_score, 2)
         })
 
-    # 점수를 기준으로 카페 정렬 후 상위 30개만 반환
+    # 점수를 기준으로 카페 정렬 후 상위 30개만 선택
     recommendations = sorted(recommendations, key=lambda x: x['final_score'], reverse=True)[:30]
     
+    # 상위 30개 카페에 대해서만 리뷰 수를 가져와서 추가
+    for cafe in recommendations:
+        cafe_id = cafe["id"]
+        cafe["reviews"] = get_review_count(cafe_id)  # 리뷰 개수 추가
+
     # 결과 출력
     print("Top 30 Cafe Recommendations:", recommendations)
     return recommendations
