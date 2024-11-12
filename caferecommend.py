@@ -72,10 +72,5 @@ def recommend_cafes(user_preferences):
     print("Top 30 Cafe Recommendations:", recommendations)
     return recommendations
 
-# 테스트용으로 사용자 선호도 입력
-user_preferences = {
-    "categories": [ "사진찍기 좋은", "사람 많은", "넓은", "조용한", "경치가 좋은", "인테리어 예쁜"]
-}
-
 # 추천 결과 가져오기
 recommend_cafes(user_preferences)
