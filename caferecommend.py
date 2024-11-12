@@ -16,6 +16,7 @@ def get_review_count(cafe_id):
     url = f"https://port-0-back-m341pqyi646021b2.sel4.cloudtype.app/reviews/count/{cafe_id}"
     try:
         response = requests.get(url)
+        print(response)
         response.raise_for_status()  # 상태 코드가 200이 아닐 경우 예외 발생
         data = response.json()
         review_count = data.get('review_count', 0)  # 응답에서 리뷰 개수를 추출
