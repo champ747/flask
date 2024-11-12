@@ -1,5 +1,5 @@
 from pymongo import MongoClient
-from bson import ObjectId  # ObjectId 클래스를 가져옵니다.
+from bson import ObjectId
 import requests
 
 # MongoDB 클라이언트 설정
@@ -25,35 +25,38 @@ def get_review_count(cafe_id):
         print(f"Error fetching review count for cafe_id {cafe_id}: {e}")
         return 0
 
-# 특정 카페에 대한 데이터를 가져오는 함수 (기존 recommend_cafes 이름으로 유지)
+# 모든 카페에 대해 추천 점수를 계산하는 함수
 def recommend_cafes(user_preferences):
-    # 특정 카페 ID로 테스트할 때 사용할 ID
-    test_cafe_id = ObjectId("672e4b0a614f611746736b8d")  # ObjectId로 변환하여 사용
     user_preference_categories = user_preferences.get('categories', [])
     
-    # MongoDB에서 특정 카페 데이터 가져오기
-    cafe = cafes_collection.find_one({"_id": test_cafe_id}, {'_id': 1, 'name': 1, 'image': 1, 'rating': 1, 'status': 1, 'location': 1, 'category': 1})
+    # MongoDB에서 모든 카페 데이터 가져오기
+    cafes = list(cafes_collection.find({}, {'_id': 1, 'name': 1, 'image': 1, 'rating': 1, 'status': 1, 'location': 1, 'category': 1}))
+
+    # 최대 서비스 평점 정의 (기준점)
+    max_service_rating = 5.0
+    recommendations = []
     
-    if cafe:
-        review_count = get_review_count(str(cafe['_id']))  # 리뷰 개수 요청
+    for cafe in cafes:
+        cafe_id = str(cafe['_id'])  # MongoDB ObjectID를 문자열로 변환
+        review_count = get_review_count(cafe_id)  # 리뷰 개수 요청
 
         # 사용자 선호 category와 카페의 대표 category 비교 및 가중치 계산
         match_score = 0
         for index, user_category in enumerate(user_preference_categories):
+            # 사용자 선호도 순서에 따라 가중치를 계산
             weight = ATMOSPHERE_WEIGHT * (len(user_preference_categories) - index)
             if user_category in cafe.get('category', []):
                 match_score += weight
 
         # 카페의 서비스 평점 차이 계산
-        max_service_rating = 5.0
         service_diff = max_service_rating - float(cafe.get('rating', 0))
         
         # 최종 점수 계산
         final_score = match_score + (service_diff * SERVICE_WEIGHT)
         
-        # 결과 출력
-        recommendation = [{
-            "id": str(cafe['_id']),
+        # 추천 리스트에 추가
+        recommendations.append({
+            "id": cafe_id,
             "name": cafe.get('name', 'Unknown'),
             "image": cafe.get('image', 'https://example.com/default.jpg'),
             "rating": cafe.get('rating', 0),
@@ -61,16 +64,18 @@ def recommend_cafes(user_preferences):
             "status": cafe.get('status', '정보 없음'),
             "location": cafe.get('location', '위치 정보 없음'),
             "final_score": round(final_score, 2)
-        }]
-        print("Single Cafe Recommendation:", recommendation)
-        return recommendation
-    else:
-        print("No cafe found with the given ID.")
-        return []
+        })
+
+    # 점수를 기준으로 카페 정렬 후 상위 30개만 반환
+    recommendations = sorted(recommendations, key=lambda x: x['final_score'], reverse=True)[:30]
+    
+    # 결과 출력
+    print("Top 30 Cafe Recommendations:", recommendations)
+    return recommendations
 
 # 테스트용으로 사용자 선호도 입력
 user_preferences = {
-    "categories": ["넓은", "조용한"]
+    "categories": [ "사진찍기 좋은", "사람 많은", "넓은", "조용한", "경치가 좋은", "인테리어 예쁜"]
 }
 
 # 추천 결과 가져오기
