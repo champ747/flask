@@ -4,12 +4,11 @@ import json
 from flask_cors import CORS  # CORS import 추가
 
 app = Flask(__name__)
-CORS(app)  # CORS 설정 추가
+CORS(app, resources={r"/api/*": {"origins": "*"}})  # 모든 도메인에 대해 /api/* 경로 허용
 
 @app.route('/api/recommend', methods=['POST'])
 def recommend():
-    user_preferences = request.json  # 전체 JSON 데이터를 딕셔너리로 가져옴
-    print("Received user preferences:", user_preferences)  # 확인용 출력
+    user_preferences = request.json.get('categories')
     recommendations = recommend_cafes_standard(user_preferences)
     return app.response_class(
         response=json.dumps(recommendations, ensure_ascii=False),
