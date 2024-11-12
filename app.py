@@ -8,12 +8,16 @@ CORS(app, resources={r"/api/*": {"origins": "*"}})  # 모든 도메인에 대해
 
 @app.route('/api/recommend', methods=['POST'])
 def recommend():
-    user_preferences = request.json.get('categories')
+    user_preferences = request.json  # request.json이 이미 딕셔너리인지 확인
+    if not isinstance(user_preferences, dict):
+        user_preferences = {"categories": user_preferences}  # user_preferences가 리스트인 경우 딕셔너리로 감싸기
+
     recommendations = recommend_cafes_standard(user_preferences)
     return app.response_class(
         response=json.dumps(recommendations, ensure_ascii=False),
         mimetype='application/json'
     )
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
