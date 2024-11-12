@@ -27,7 +27,17 @@ def get_review_count(cafe_id):
 
 # 모든 카페에 대해 추천 점수를 계산하는 함수
 def recommend_cafes(user_preferences):
-    user_preference_categories = user_preferences.get('categories', [])
+
+    # 기본 user_preferences 설정
+    default_preferences = {
+        "categories": ["사진찍기 좋은", "사람 많은", "넓은", "조용한", "경치가 좋은", "인테리어 예쁜"]
+    }
+    
+    # 프론트엔드에서 값이 넘어오면 덮어씌우기
+    if user_preferences:
+        default_preferences.update(user_preferences)
+    
+    user_preference_categories = default_preferences.get('categories', [])
     
     # MongoDB에서 모든 카페 데이터 가져오기
     cafes = list(cafes_collection.find({}, {'_id': 1, 'name': 1, 'image': 1, 'rating': 1, 'location': 1, 'category': 1}))
