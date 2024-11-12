@@ -20,6 +20,7 @@ def get_review_count(cafe_id):
         data = response.json()
         review_count = data.get('review_count', 0)  # 응답에서 리뷰 개수를 추출
         print(f"Successfully fetched review count for cafe_id {cafe_id}: {review_count}")
+        total_review_count += review_count
         return review_count
     except requests.RequestException as e:
         print(f"Error fetching review count for cafe_id {cafe_id}: {e}")
@@ -68,6 +69,7 @@ def recommend_cafes(user_preferences):
 
     # 점수를 기준으로 카페 정렬 후 상위 30개만 반환
     recommendations = sorted(recommendations, key=lambda x: x['final_score'], reverse=True)[:30]
+    print(f"total review : {total_review_count}")
     
     # 결과 출력
     print("Top 30 Cafe Recommendations:", recommendations)
