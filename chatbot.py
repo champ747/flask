@@ -6,29 +6,27 @@ from pymongo import MongoClient
 
 # MongoDB 클라우드 연결 설정
 client = MongoClient("mongodb+srv://suyeon10187:gnbalpha1@cluster0.vztxs.mongodb.net/?retryWrites=true&w=majority&tlsAllowInvalidCertificates=true")
-db = client['test']                       # 데이터베이스 이름
-collection = db['caves']                 # 컬렉션 이름
+db = client['test']  # 데이터베이스 이름
+collection = db['caves']  # 컬렉션 이름
 
 # 형태소 분석기 초기화
 kiwi = Kiwi()
 
-# 리뷰와 카테고리 키워드를 형태소로 분석하는 함수 (가중치 없이)
+# 리뷰와 카테고리 키워드를 형태소로 분석하는 함수
 def tokenize_with_weights(reviews, categories):
     tokens = []
 
-    # 리뷰 텍스트에서 명사와 형용사만 추출
     for review in reviews:
         if isinstance(review, str):
             tokens.extend([word for word, tag, _, _ in kiwi.tokenize(review) if tag in ['NNG', 'VA']])
 
-    # 각 카테고리를 가중치 없이 한 번씩 추가
     tokens.extend(categories)
 
     return ' '.join(tokens)
 
 # MongoDB에서 데이터 가져오기
 def load_data_from_mongo():
-    data = collection.find()  # 모든 문서 가져오기
+    data = collection.find()
     cafes = []
     for entry in data:
         reviews = [entry.get('review1', ''), entry.get('review2', ''), entry.get('review3', '')]
@@ -79,19 +77,15 @@ def recommend_cafes(user_input):
             location = token
             break
 
-    # '조용' 입력 포함 시 조용한 속성 필터링
     filtered_cafes = [cafe for cafe in cafes if cafe['is_quiet']] if "조용" in tokens else cafes
 
-    # 지역명 필터링: 주소나 이름에 해당 지역명이 포함된 경우 필터링
     if location:
         filtered_cafes = [cafe for cafe in filtered_cafes if location in cafe['address'] or location in cafe['name']]
 
-    # 필터링된 카페에 대해 TF-IDF 유사도 계산
     if filtered_cafes:
         similarities = calculate_tfidf_similarity(processed_input, filtered_cafes)
         top_cafes = sorted(zip(filtered_cafes, similarities), key=lambda x: x[1], reverse=True)
 
-        # 중복된 카페 제거
         seen = set()
         unique_cafes = []
         for cafe, similarity in top_cafes:
@@ -99,7 +93,6 @@ def recommend_cafes(user_input):
                 unique_cafes.append((cafe, similarity))
                 seen.add(cafe['name'])
 
-        # 3개 미만일 경우, 나머지를 일반 카페로 채우기
         if len(unique_cafes) < 3:
             extra_cafes = [cafe for cafe in cafes if cafe['name'] not in seen]
             unique_cafes.extend(zip(extra_cafes, [0] * (3 - len(unique_cafes))))
@@ -108,13 +101,4 @@ def recommend_cafes(user_input):
     else:
         recommendations = ["추천할 카페가 없습니다."]
 
-    return f"추천하는 카페는 다음과 같습니다:\n" + '\n'.join(recommendations)
-
-# 추천 반복 실행
-while True:
-    user_input = input("원하는 분위기와 지역을 나타내는 단어나 형용사를 입력해 주세요 (종료하려면 'exit' 입력): ")
-    if user_input.lower() == "exit":
-        break
-
-    recommendations = recommend_cafes(user_input)
-    print(f"\n{recommendations}\n")
+    return recommendations
