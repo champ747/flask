@@ -15,4 +15,4 @@ konlpy==0.6.0
 requests
 flask_cors
 kiwipiepy
-
+scikit-learn
