@@ -31,19 +31,19 @@ def recommend():
 # 챗봇 추천 API
 @app.route('/api/chatbot', methods=['POST'])
 def chatbot_recommend():
-    """
-    사용자 입력을 기반으로 챗봇 방식으로 카페를 추천하는 API
-    """
     try:
         user_input = request.json.get('user_input', '').strip()
         if not user_input:
             return jsonify({"error": "user_input is required"}), 400
 
-        # 챗봇 추천 함수 호출
         recommendations = recommend_cafes_chatbot(user_input)
-        return jsonify({"recommendations": recommendations})
+        return app.response_class(
+            response=json.dumps({"recommendations": recommendations}, ensure_ascii=False),
+            mimetype='application/json'
+        )
     except Exception as e:
         return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+
 
 # Flask 서버 실행
 if __name__ == '__main__':
