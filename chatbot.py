@@ -52,7 +52,7 @@ def load_data_from_mongo():
             'name': entry.get('name', 'Unknown'),
             'image': entry.get('image_url', 'https://example.com/default.jpg'),
             'rating': entry.get('rating', 0),
-            'reviews': get_review_count(str(entry['_id'])),  # 리뷰 수를 네트워크 요청으로 가져옴
+            'reviews': 0,  # 초기값, 이후 상위 5개의 카페에 대해서만 업데이트
             'location': entry.get('address', '위치 정보 없음'),
             'tokenized_text': tokenized_text,
             'is_quiet': '조용한' in categories
@@ -116,14 +116,18 @@ def recommend_cafes(user_input):
                 unique_cafes.append((cafe, similarity))
                 seen.add(cafe['name'])
 
-        # 최대 3개의 카페 반환
+        # 상위 5개의 카페에 대해 리뷰 수 가져오기
+        for cafe, _ in unique_cafes[:5]:
+            cafe['reviews'] = get_review_count(cafe['id'])
+
+        # 최대 5개의 카페 반환
         recommendations = [
             {
                 "id": cafe['id'],
                 "name": cafe['name'],
                 "image": cafe['image'],
                 "rating": cafe['rating'],
-                "reviews": cafe['reviews'],  # 리뷰 수 포함
+                "reviews": cafe['reviews'],  # 리뷰 수 업데이트됨
                 "location": cafe['location']
             }
             for cafe, _ in unique_cafes[:5]
