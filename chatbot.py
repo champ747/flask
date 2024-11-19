@@ -36,7 +36,7 @@ def load_data_from_mongo():
         cafes.append({
             'id': str(entry['_id']),  # MongoDB ObjectID를 문자열로 변환
             'name': entry.get('name', 'Unknown'),
-            'image': entry.get('image', 'https://example.com/default.jpg'),
+            'image': entry.get('image_url', 'https://example.com/default.jpg'),
             'rating': entry.get('rating', 0),
             'reviews': entry.get('reviews', 0),
             'location': entry.get('address', '위치 정보 없음'),
