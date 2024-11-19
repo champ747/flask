@@ -112,7 +112,7 @@ def recommend_cafes(user_input):
                 "reviews": cafe['reviews'],
                 "address": cafe['location']
             }
-            for cafe, _ in unique_cafes[:3]
+            for cafe, _ in unique_cafes[:5]
         ]
     else:
         recommendations = []
