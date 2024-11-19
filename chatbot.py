@@ -2,11 +2,25 @@ from kiwipiepy import Kiwi
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from pymongo import MongoClient
+import requests
 
 # MongoDB 클라이언트 설정
 client = MongoClient("mongodb+srv://champ7474:gnbalpha1@cluster0.vztxs.mongodb.net/")
 db = client['test']  # 데이터베이스 이름
 collection = db['caves']  # 컬렉션 이름
+
+# 리뷰 수를 가져오는 함수
+def get_review_count(cafe_id):
+    url = f"https://port-0-back-m341pqyi646021b2.sel4.cloudtype.app/reviews/count/{cafe_id}"
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # 상태 코드가 200이 아닐 경우 예외 발생
+        data = response.json()
+        review_count = data.get('count', 0)  # 응답에서 리뷰 개수를 추출
+        return review_count
+    except requests.RequestException as e:
+        print(f"Error fetching review count for cafe_id {cafe_id}: {e}")
+        return 0
 
 # 형태소 분석기 초기화
 kiwi = Kiwi()
@@ -38,7 +52,7 @@ def load_data_from_mongo():
             'name': entry.get('name', 'Unknown'),
             'image': entry.get('image_url', 'https://example.com/default.jpg'),
             'rating': entry.get('rating', 0),
-            'reviews': entry.get('reviews', 0),
+            'reviews': get_review_count(str(entry['_id'])),  # 리뷰 수를 네트워크 요청으로 가져옴
             'location': entry.get('address', '위치 정보 없음'),
             'tokenized_text': tokenized_text,
             'is_quiet': '조용한' in categories
@@ -109,7 +123,7 @@ def recommend_cafes(user_input):
                 "name": cafe['name'],
                 "image": cafe['image'],
                 "rating": cafe['rating'],
-                "reviews": cafe['reviews'],
+                "reviews": cafe['reviews'],  # 리뷰 수 포함
                 "location": cafe['location']
             }
             for cafe, _ in unique_cafes[:5]
