@@ -107,10 +107,10 @@ def recommend_cafes(user_input):
             {
                 "id": cafe['id'],
                 "name": cafe['name'],
-                "image_url": cafe['image'],
+                "image": cafe['image'],
                 "rating": cafe['rating'],
                 "reviews": cafe['reviews'],
-                "address": cafe['location']
+                "location": cafe['location']
             }
             for cafe, _ in unique_cafes[:5]
         ]
