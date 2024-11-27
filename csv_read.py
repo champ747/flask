@@ -2,8 +2,8 @@ import pandas as pd
 import random
 
 # CSV 파일 경로
-model_generated_summaries_file = "/mnt/data/model_generated_summaries_ver6.csv"
-blog_full_results_file = "/mnt/data/blog_full_results.csv"
+model_generated_summaries_file = "./model_generated_summaries_ver6.csv"
+blog_full_results_file = "./blog_full_results.csv"
 
 # 데이터셋 읽기
 model_generated_summaries = pd.read_csv(model_generated_summaries_file)
