@@ -17,12 +17,14 @@ def get_random_blogs(n=10):
     랜덤으로 n개의 블로그 데이터를 반환합니다.
     """
     results = []
+    count = 0
     for _, row in blog_full_results.iterrows():
         title = row['Title']
         url = row['Link']
         summary = summary_map.get(title, "요약 정보가 없습니다.")  # 매핑된 요약 가져오기
-        
+        count+1
         results.append({
+            "_id" : count
             "title": title,
             "url": url,
             "summary": summary
