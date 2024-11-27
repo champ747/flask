@@ -79,7 +79,10 @@ def recommend_cafes(user_input):
 
     # '조용한' 입력 포함 시 필터링
     contains_quiet = "조용한" in tokens
-    filtered_cafes = [cafe for cafe in cafes if cafe['is_quiet']] if contains_quiet else cafes
+    if contains_quiet:
+        filtered_cafes = [cafe for cafe in cafes if cafe.get('is_quiet', False)]
+    else:
+        filtered_cafes = cafes
 
     # 지역명 필터링
     if location:
@@ -90,7 +93,7 @@ def recommend_cafes(user_input):
         similarities = calculate_tfidf_similarity(processed_input, filtered_cafes)
         top_cafes = sorted(zip(filtered_cafes, similarities), key=lambda x: x[1], reverse=True)
 
-        # 중복 제거 및 상위 3개 선택
+        # 중복 제거 및 상위 5개 선택
         seen = set()
         unique_cafes = []
         for cafe, similarity in top_cafes:
