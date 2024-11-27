@@ -85,17 +85,29 @@ def calculate_tfidf_similarity(user_input, cafes):
 
 # MongoDB에서 데이터 가져오기
 def load_data_from_mongo():
-    
-    cafes = list(cafes_collection.find({}, {'_id': 1, 'name': 1, 'image_url': 1, 'rating': 1, 'address': 1, 'category': 1, 'review1': 1, 'review2': 1, 'review3': 1}))
+    cafes = list(collection.find({}, {'_id': 1, 'name': 1, 'image_url': 1, 'rating': 1, 'address': 1, 'category': 1, 'review1': 1, 'review2': 1, 'review3': 1}))
     for entry in cafes:
         reviews = [entry.get('review1', ''), entry.get('review2', ''), entry.get('review3', '')]
         categories = entry.get('category', [])
         tokenized_text = tokenize_with_weights(reviews, categories)
-        cafes.append({
-            'tokenized_text': tokenized_text,
-            'is_quiet': '조용한' in categories
-        })
+        entry['tokenized_text'] = tokenized_text
+        entry['is_quiet'] = '조용한' in categories
     return cafes
+
+import requests
+
+def get_review_count(cafe_id):
+    url = f"https://port-0-back-m341pqyi646021b2.sel4.cloudtype.app/reviews/count/{cafe_id}"
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # 상태 코드가 200이 아닐 경우 예외 발생
+        data = response.json()
+        return data.get('count', 0)  # 리뷰 개수 반환
+    except requests.RequestException as e:
+        print(f"Error fetching review count for cafe_id {cafe_id}: {e}")
+        return 0
+
+
 
 # MongoDB에서 로드한 데이터
 cafes = load_data_from_mongo()
@@ -139,7 +151,17 @@ def recommend_cafes(user_input):
             extra_cafes = [cafe for cafe in cafes if cafe['name'] not in seen]
             unique_cafes.extend(zip(extra_cafes, [0] * (3 - len(unique_cafes))))
 
-        recommendations = [{"id": cafe['_id'], "name": cafe['name'],"image":cafe['image_url'], "rating":cafe['rating']  "location": cafe['address']} for cafe, _ in unique_cafes[:5]]
+        recommendations = [
+    {
+        "id": str(cafe['_id']),  # MongoDB ObjectId를 문자열로 변환
+        "name": cafe['name'],
+        "image": cafe.get('image_url', 'https://example.com/default.jpg'),
+        "rating": cafe.get('rating', 0),
+        "location": cafe['address']
+    }
+    for cafe, _ in unique_cafes[:5]
+]
+
     else:
         recommendations = []
 
