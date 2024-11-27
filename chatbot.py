@@ -82,20 +82,24 @@ def calculate_tfidf_similarity(user_input, cafes):
     cafe_vectors = vectors[:-1]
     similarities = cosine_similarity([user_vector], cafe_vectors)[0]
     return similarities
-
 # MongoDB에서 데이터 가져오기
 def load_data_from_mongo():
-    data = collection.find()  # 모든 문서 가져오기
+    # 필요한 필드만 가져오기
+    data = list(collection.find({}, {'_id': 1, 'name': 1, 'image_url': 1, 'rating': 1, 'reviews': 1, 'address': 1, 'category': 1}))
     cafes = []
     for entry in data:
         reviews = [entry.get('review1', ''), entry.get('review2', ''), entry.get('review3', '')]
         categories = entry.get('category', [])
         tokenized_text = tokenize_with_weights(reviews, categories)
         cafes.append({
-            'name': entry['name'],
-            'address': entry['address'],
+            'id': str(entry['_id']),  # MongoDB ObjectID를 문자열로 변환
+            'name': entry.get('name', ''),
+            'image': entry.get('image_url', ''),
+            'rating': entry.get('rating', 0.0),
+            'reviews': entry.get('reviews', 0),
+            'location': entry.get('address', ''),
             'tokenized_text': tokenized_text,
-            'is_quiet': '조용한' in categories
+            'is_quiet': '조용한' in categories  # '조용한' 카테고리 여부 확인
         })
     return cafes
 
@@ -123,7 +127,7 @@ def recommend_cafes(user_input):
 
     # 지역명 필터링
     if location:
-        filtered_cafes = [cafe for cafe in filtered_cafes if location in cafe['address']]
+        filtered_cafes = [cafe for cafe in filtered_cafes if location in cafe['location']]
 
     # TF-IDF 유사도 계산
     if filtered_cafes:
@@ -141,7 +145,15 @@ def recommend_cafes(user_input):
             extra_cafes = [cafe for cafe in cafes if cafe['name'] not in seen]
             unique_cafes.extend(zip(extra_cafes, [0] * (3 - len(unique_cafes))))
 
-        recommendations = [{"name": cafe['name'], "address": cafe['address']} for cafe, _ in unique_cafes[:5]]
+        # 모든 정보 반환
+        recommendations = [{
+            "id": cafe['id'],
+            "name": cafe['name'],
+            "image": cafe['image'],
+            "rating": cafe['rating'],
+            "reviews": cafe['reviews'],
+            "location": cafe['location']
+        } for cafe, _ in unique_cafes[:5]]
     else:
         recommendations = []
 
