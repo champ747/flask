@@ -21,7 +21,6 @@ def get_random_blogs(n=10):
         title = row['Title']
         url = row['Link']
         summary = summary_map.get(title, "요약 정보가 없습니다.")  # 매핑된 요약 가져오기
-        count+1
         results.append({
             "title": title,
             "url": url,
