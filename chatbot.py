@@ -98,7 +98,7 @@ def recommend_cafes(user_input):
                 unique_cafes.append((cafe, similarity))
                 seen.add(cafe['name'])
 
-        recommendations = [{"name": cafe['name'], "address": cafe['address']} for cafe, _ in unique_cafes[:3]]
+        recommendations = [{"name": cafe['name'], "address": cafe['address']} for cafe, _ in unique_cafes[:5]]
     else:
         recommendations = []
 
