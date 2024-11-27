@@ -107,7 +107,6 @@ def recommend_cafes(user_input):
     processed_input = process_user_input(user_input)
 
     # 지역명 추출
-    location_keywords = custom_keywords
     location = None
     tokens = processed_input.split()
     for token in tokens:
@@ -138,6 +137,9 @@ def recommend_cafes(user_input):
             if cafe['name'] not in seen:
                 unique_cafes.append((cafe, similarity))
                 seen.add(cafe['name'])
+        if len(unique_cafes) < 3:
+            extra_cafes = [cafe for cafe in cafes if cafe['name'] not in seen]
+            unique_cafes.extend(zip(extra_cafes, [0] * (3 - len(unique_cafes))))
 
         recommendations = [{"name": cafe['name'], "address": cafe['address']} for cafe, _ in unique_cafes[:5]]
     else:
